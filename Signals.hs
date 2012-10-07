@@ -23,8 +23,8 @@ instance Signal CSignal where
     eval (SImpuls t a) x = a * rect ((x - t)/t) :+ 0
     eval (Gaus s a) x    = a * exp (-x*x/s/s)  :+ 0
                      
-data DSignal = DSignal {dt  :: Double,
-                        t0 :: Double,
+data DSignal = DSignal {t0  :: Double,
+                        dt :: Double,
                         ind ::[Complex Double]
                        } deriving Show
 
