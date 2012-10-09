@@ -3,6 +3,8 @@ module Signals where
 import Data.Complex
 import Service
 
+import Control.DeepSeq
+
 class Signal a where
     eval :: a -> Double -> Complex Double
     evalA :: a -> Double -> Double
@@ -34,6 +36,9 @@ instance Signal DSignal where
                        ind [t0, t0 + dt ..] 
         where f = 1/2/dt :+ 0
               k x = x/dt :+ 0
+              
+instance NFData DSignal where
+    rnf (DSignal t d l) = rnf t `seq` rnf d `seq` rnf l
               
 discretize :: CSignal -> Double -> Double -> Double -> DSignal
 discretize sig a b dx = DSignal a dx $ map (eval sig) [a,a+dx .. b] 
