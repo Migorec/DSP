@@ -31,10 +31,7 @@ lab02 sig a b n =
        let df = 1 / dt / fromIntegral n;
            dftu = zip [0,0+dt .. 0 + dt * fromIntegral n] $ map magnitude $ ind dftr
            fftu = zip [0,0+dt .. 0 + dt * fromIntegral n] $ map magnitude $ ind fftr
-      {- 
-       let du = map (\x -> (x, evalA fs x)) [-1,-0.99 .. 10]
-       du1 = map (\x -> (x, evalA fs1 x)) [-1,-0.99 .. 10]
-      -}
+     
            st1 = defaultStyle {lineSpec = CustomStyle [LineTitle ("dft (" ++ show (dftt - dftt0) ++ ")"), LineWidth 5.0]}
            st2 = defaultStyle {lineSpec = CustomStyle [LineTitle ("fft (" ++ show (fftt - fftt0) ++ ")"), LineWidth 2.0]}
        plotPathsStyle [terminal cons] [(st1,dftu), (st2, fftu)] 

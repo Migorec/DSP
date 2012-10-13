@@ -20,3 +20,4 @@ oddEven l = myUnzip $ oePairs l
     where oePairs [] = []
           oePairs [x] = [[x]]
           oePairs (x1:x2:xs) = [x1,x2]:(oePairs xs) 
+          
