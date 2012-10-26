@@ -13,6 +13,13 @@ dft l =map (\k -> sum $ zipWith (\u j -> u * exp (0 :+ (-2*pi*k*j/n)))
     where n = fromIntegral $ length l
           indexes = [0 .. n-1]
             
+
+rdft :: [Complex Double] -> [Complex Double]
+rdft l =map (\k -> (sum $ zipWith (\u j -> u * exp (0 :+ (2*pi*k*j/n))) 
+                                                      l indexes) / (n :+ 0) 
+            ) indexes 
+    where n = fromIntegral $ length l
+          indexes = [0 .. n-1]
           
 tFactor :: (Integral a, Integral b) => a -> b -> Complex Double
 tFactor nk n = exp (0 :+ (-2*pi* fromIntegral nk / fromIntegral n))
@@ -39,5 +46,6 @@ fft l | odd n = dft l
           
 
 rfft :: [Complex Double] -> [Complex Double]
-rfft = map conjugate . fft . map conjugate         
+rfft l = (map (\x -> x / (n :+ 0)).map conjugate . fft . map conjugate)  l     
+    where   n = fromIntegral $ length l
 

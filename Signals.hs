@@ -16,14 +16,15 @@ data CSignal = Impuls  { t :: Double,
                          amp :: Double } |
                SImpuls { t :: Double,
                          amp :: Double } |
-               Gaus    { sigma :: Double,
+               Gaus    { mu :: Double,
+                         sigma :: Double,
                          amp :: Double } 
                                       
 instance Signal CSignal where
     eval (Impuls t a) x  | abs (x-t) < 0.00001 = a :+ 0
                          | otherwise = 0
     eval (SImpuls t a) x = a * rect ((x - t)/t) :+ 0
-    eval (Gaus s a) x    = a * exp (-x*x/s/s)  :+ 0
+    eval (Gaus m s a) x    = a * exp (-(x-m)*(x-m)/s/s)  :+ 0
                      
 data DSignal = DSignal {t0  :: Double,
                         dt :: Double,

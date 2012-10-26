@@ -15,7 +15,7 @@ lab02 :: CSignal -> Double -> Double -> Int -> IO ()
 lab02 sig a b n = 
     do let h = (b - a) / fromIntegral (n - 1)
        ds@(DSignal t0 dt l) <- do (DSignal t0 dt l) <- evaluate $ discretize sig a b h
-                                  x <- evaluate $ DSignal t0 dt $ zipWith (*) l $ map (\t -> exp (0 :+ pi*t)) [a, a + h ..  b]
+                                  x <- evaluate $ DSignal t0 dt $ zipWith (*) l $ map (\t -> exp (0 :+ pi*(t/dt))) [a, a + h ..  b]
                                   rnf x `seq` return x  
        
        dftt0 <- getCPUTime              
