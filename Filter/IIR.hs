@@ -25,13 +25,13 @@ butterworthCoef tau b = (b0, a1,a2)
           a2 = 1/e/e/e/e :+ 0
           b0 = 1 + a1 + a2
 
-lowButterworth :: DSignal -> Double -> DSignal
-lowButterworth sig@(DSignal t0 tau l) b = sFilter sig (iirResponse (b0-2*a1) (-a1) a2 tau)
+lowButterworth :: Double -> DSignal -> DSignal
+lowButterworth b sig@(DSignal t0 tau l) = sFilter sig (iirResponse (b0-2*a1) (-a1) a2 tau)
     where 
           (b0,a1,a2) = butterworthCoef tau b
           
-highButterworth :: DSignal -> Double -> DSignal
-highButterworth sig@(DSignal t0 tau l) b = sFilter sig (iirResponse b0 a1 a2 tau)
+highButterworth :: Double -> DSignal -> DSignal
+highButterworth b sig@(DSignal t0 tau l) = sFilter sig (iirResponse b0 a1 a2 tau)
     where 
           (b0,a1,a2) = butterworthCoef tau b          
 

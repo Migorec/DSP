@@ -7,16 +7,16 @@ import System.Random
 import Data.Random.Normal
 
 
-uniformNoise :: Int -> Double -> IO [Complex Double]
-uniformNoise n a =
+uniformNoise :: Double -> Int ->  IO [Complex Double]
+uniformNoise a n =
     do replicateM n $ do r <- randomIO :: IO Double
                          if r > (5 / fromIntegral n)
                          then return 0
                          else do r <- randomIO :: IO Double
                                  return (r*a :+ 0)
                                  
-normalNoise :: Int -> Double -> Double -> IO [Complex Double]
-normalNoise n a s = 
+normalNoise :: Double -> Double -> Int -> IO [Complex Double]
+normalNoise a s n = 
     do replicateM n $ do r <- normalIO' (a,s)
                          return (r :+ 0)
 
