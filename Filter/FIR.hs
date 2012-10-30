@@ -17,9 +17,6 @@ highBatterworth (DSignal t0 tau l) b = DSignal t0 tau $ rfft $ zipWith (*) (fft 
     where n = fromIntegral $ length l
           df = 1 / n / tau
 
-batterworth :: Double -> Double -> [Complex Double]
-batterworth b tau = map (\f -> 1/(1 + (f/b)**2) :+ 0) [0,tau ..]
-
 lowGaus :: DSignal -> Double -> DSignal
 lowGaus (DSignal t0 tau l) b = DSignal t0 tau $ rfft $ zipWith (*) (fft l) $ map (\f -> exp ((-f*f/2/b/b):+0)) [0,df..(n-1)*df]
     where n = fromIntegral $ length l
@@ -30,5 +27,3 @@ highGaus (DSignal t0 tau l) b = DSignal t0 tau $ rfft $ zipWith (*) (fft l) $ ma
     where n = fromIntegral $ length l
           df = 1 / n / tau
 
-gaus :: Double -> Double -> [Complex Double]
-gaus s tau = map (\f -> exp(-(f*f/2/s/s :+ 0))) [0,tau ..]
