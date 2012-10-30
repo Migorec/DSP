@@ -7,33 +7,51 @@ import Graphics.Gnuplot.Terminal.WXT
 import Noise
 import Filter.Convolution
 import qualified Filter.IIR as IIR
-import Filter.FIR
+import qualified Filter.FIR as FIR
+import Filter.Weiner
 import Fourier
 
 
+lab04 :: CSignal -> 
+         Double -> 
+         Double -> 
+         Int -> 
+         (Int -> IO [Complex Double]) -> 
+         (DSignal -> DSignal) -> 
+         IO ()
+lab04 csig a b n no fi =
+    do let dt = (b - a) / fromIntegral (n - 1)
+           u = discretize csig a b dt
+       noise <- no n
+       let nu = applyNoise u noise 
+           fu = fi nu
+           gnu = map (\x -> (x, evalA nu x)) [a,a+dt .. b]
+           gfu = map (\x -> (x, evalA fu x)) [a,a+dt .. b]
+           st1 = defaultStyle {lineSpec = CustomStyle [LineTitle "with noise", LineWidth 3.0]}
+           st2 = defaultStyle {lineSpec = CustomStyle [LineTitle "filtered", LineWidth 2.0]}
+       plotPathsStyle [terminal cons] [(st1,gnu),(st2,gfu)]
 
 
-main = do
-    let sig = Gaus 0 1 5
-        u = discretize sig (-3) 3 0.05
-    nu <-  uniformNoise 3 u--normalNoise 3 0.2 u -- 
-     
-    let i = ind nu
-        --i = zipWith (*) di $ map (\t -> exp (0 :+ pi*(t/0.1))) [-3, -3 + 0.1 ..  3]
-        n = length i
+
+lab05 :: CSignal -> 
+         Double -> 
+         Double -> 
+         Int -> 
+         (Int -> IO [Complex Double]) -> 
+         IO ()
+lab05 csig a b n no =
+    do let dt = (b - a) / fromIntegral (n - 1)
+           u = discretize csig a b dt
+       noise <- no n
+       let nu = applyNoise u noise
+           fu = weiner  nuise nu
+           --fu = fi nu
+           gnu = map (\x -> (x, evalA nu x)) [a,a+dt .. b]
+           gfu = map (\x -> (x, evalA fu x)) [a,a+dt .. b]
+           st1 = defaultStyle {lineSpec = CustomStyle [LineTitle "with noise", LineWidth 3.0]}
+           st2 = defaultStyle {lineSpec = CustomStyle [LineTitle "filtered", LineWidth 2.0]}
+       plotPathsStyle [terminal cons] [(st1,gnu),(st2,gfu)]
         
---        rnu =  lowGaus nu 0.5
-        --rnu =  highGaus nu 20
-        rnu = IIR.highBatterworth nu 0.5
-        --rnu = nu{ind = rfft $ zipWith (*) (fft  i) ( gaus 0.5 (1/(dt nu)/fromIntegral n))}
---    print rnu
-    let
-        dftu = zip [-3,-3+0.05 .. 3] $ map magnitude $ ind nu
-        rdftu = zip [-3,-3+0.05 .. 3] $ map magnitude $ ind rnu
-    --    rdftu = map (\x -> (x,evalA rnu x)) [-3,-3+0.01 .. 3]  
         
-        st1 = defaultStyle {lineSpec = CustomStyle [LineTitle "Noise", LineWidth 3.0]}
-        st2 = defaultStyle {lineSpec = CustomStyle [LineTitle "Filter", LineWidth 2.0]}
-    
-    
-    plotPathsStyle [terminal cons] [(st1,dftu),(st2,rdftu)] 
+main = lab05 (Gaus 0 1 5) (-3) 3 128 (uniformNoise 3)  --(weiner (uniformNoise 3))
+  
